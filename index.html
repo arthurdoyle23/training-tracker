@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111418">
+<title>Training Tracker</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--text:#16191d;--muted:#6b7380;--line:#e3e6ea;--accent:#2f6fde;
+--done:#1f9d55;--partial:#d08a12;--skipped:#c2413b;--rest:#8a93a0}
+@media (prefers-color-scheme:dark){:root{--bg:#111418;--card:#1a1e24;--text:#e8eaed;--muted:#9aa3ad;--line:#2a3038;--accent:#6c9cf0}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+main{max-width:640px;margin:0 auto;padding:16px 16px 48px}
+h1{font-size:1.4rem;margin:8px 0 2px}
+h2{font-size:1.05rem;margin:24px 0 8px}
+.sub{color:var(--muted);font-size:.85rem}
+.tabs{display:flex;gap:8px;margin:16px 0 4px}
+.tabs button{flex:1;padding:10px;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:10px;font:inherit;font-weight:600}
+.tabs button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.tabs button[aria-pressed=true] .sub{color:#fff;opacity:.85}
+.day{background:var(--card);border:1px solid var(--line);border-radius:12px;margin:8px 0;overflow:hidden}
+.day.today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.day summary{list-style:none;display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer}
+.day summary::-webkit-details-marker{display:none}
+.date{width:44px;text-align:center;flex:none}
+.date b{display:block;font-size:1.15rem}
+.date span{font-size:.75rem;color:var(--muted);text-transform:uppercase}
+.plan{flex:1;font-weight:600}
+.note{display:block;font-weight:400;color:var(--muted);font-size:.85rem}
+.pill{font-size:.75rem;font-weight:600;padding:3px 9px;border-radius:99px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.pill.done{background:var(--done);border-color:var(--done);color:#fff}
+.pill.partial{background:var(--partial);border-color:var(--partial);color:#fff}
+.pill.skipped{background:var(--skipped);border-color:var(--skipped);color:#fff}
+.pill.rest{color:var(--rest)}
+.detail{padding:0 14px 12px 70px;font-size:.9rem}
+.detail ul{margin:0;padding-left:18px}
+.detail li{margin:3px 0}
+.progress{display:flex;gap:16px;font-size:.9rem;color:var(--muted)}
+.progress b{color:var(--text)}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:.9rem}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.75rem;color:var(--muted);text-transform:uppercase}
+tr:last-child td{border-bottom:none}
+.empty{color:var(--muted);font-size:.9rem;padding:12px;background:var(--card);border:1px dashed var(--line);border-radius:12px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Training Tracker</h1>
+  <div class="sub" id="updated"></div>
+  <div class="tabs" id="tabs"></div>
+  <div class="progress" id="progress"></div>
+  <div id="days"></div>
+  <h2>Lifts log</h2>
+  <div id="lifts"></div>
+</main>
+<script>
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const todayISO=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
+const label={planned:"Planned",done:"Done",partial:"Partial",skipped:"Skipped",rest:"Rest"};
+fetch("data.json?"+Date.now()).then(r=>r.json()).then(data=>{
+  document.getElementById("updated").textContent="Updated "+data.updated;
+  const today=todayISO();
+  let current=Math.max(0,data.weeks.findIndex(w=>w.days.some(d=>d.date===today)));
+  if(today>data.weeks.at(-1).days.at(-1).date) current=data.weeks.length-1;
+  const tabs=document.getElementById("tabs");
+  function render(){
+    tabs.innerHTML=data.weeks.map((w,i)=>`<button aria-pressed="${i===current}" data-i="${i}">${esc(w.name)}<br><span class="sub">${esc(w.range)}</span></button>`).join("");
+    const w=data.weeks[current];
+    const train=w.days.filter(d=>d.plan!=="Rest");
+    const done=train.filter(d=>d.status==="done").length;
+    document.getElementById("progress").innerHTML=`<span><b>${done}/${train.length}</b> sessions done</span>`;
+    document.getElementById("days").innerHTML=w.days.map(d=>{
+      const dt=new Date(d.date+"T00:00");
+      const parts=d.plan.split(" + ");
+      const items=parts.flatMap(p=>data.sessions[p]||[]);
+      const st=d.plan==="Rest"&&d.status==="planned"?"rest":d.status;
+      return `<details class="day${d.date===today?" today":""}"${d.date===today?" open":""}>
+        <summary><div class="date"><span>${dt.toLocaleDateString("en-AU",{weekday:"short"})}</span><b>${dt.getDate()}</b></div>
+        <div class="plan">${esc(d.plan)}${d.notes?`<span class="note">${esc(d.notes)}</span>`:""}</div>
+        <span class="pill ${st}">${label[st]||esc(st)}</span></summary>
+        ${items.length?`<div class="detail"><ul>${items.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
+      </details>`}).join("");
+  }
+  tabs.onclick=e=>{const b=e.target.closest("button");if(b){current=+b.dataset.i;render()}};
+  render();
+  const L=[...data.lifts].sort((a,b)=>b.date.localeCompare(a.date));
+  document.getElementById("lifts").innerHTML=L.length?`<table><thead><tr><th>Date</th><th>Exercise</th><th>Sets</th><th>Weight</th></tr></thead><tbody>${
+    L.map(l=>`<tr><td>${esc(l.date.slice(5).split("-").reverse().join("/"))}</td><td>${esc(l.exercise)}${l.notes?`<div class="sub">${esc(l.notes)}</div>`:""}</td><td>${esc(l.sets)}</td><td>${esc(l.weight)}</td></tr>`).join("")
+  }</tbody></table>`:`<div class="empty">No lifts logged yet. Tell Claude what you lifted and it'll show up here.</div>`;
+}).catch(()=>{document.getElementById("days").innerHTML='<div class="empty">Could not load data.json.</div>'});
+</script>
+</body>
+</html>
