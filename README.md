@@ -1,5 +1,7 @@
 # Training tracker
 
+Live: https://arthurdoyle23.github.io/training-tracker/
+
 Rehab and training log. The page (`index.html`) reads everything from `data.json`.
 
 - `weeks[].days[]`: `status` is `planned`, `done`, `partial`, `skipped` or `rest`.
