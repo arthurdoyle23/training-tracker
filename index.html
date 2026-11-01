@@ -2,86 +2,253 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#111418">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f6fde">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Training">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.json">
 <title>Training Tracker</title>
 <style>
-:root{--bg:#f6f7f9;--card:#fff;--text:#16191d;--muted:#6b7380;--line:#e3e6ea;--accent:#2f6fde;
---done:#1f9d55;--partial:#d08a12;--skipped:#c2413b;--rest:#8a93a0}
-@media (prefers-color-scheme:dark){:root{--bg:#111418;--card:#1a1e24;--text:#e8eaed;--muted:#9aa3ad;--line:#2a3038;--accent:#6c9cf0}}
-*{box-sizing:border-box}
+:root{--bg:#f6f7f9;--card:#fff;--text:#16191d;--muted:#6b7380;--line:#e3e6ea;--accent:#2f6fde;--soft:#eaf0fc;
+--done:#1f9d55;--partial:#d08a12;--skipped:#c2413b;--rest:#8a93a0;--warn-bg:#fff4e0;--warn:#8a5300}
+@media (prefers-color-scheme:dark){:root{--bg:#111418;--card:#1a1e24;--text:#e8eaed;--muted:#9aa3ad;--line:#2a3038;--accent:#6c9cf0;--soft:#1f2a3d;--warn-bg:#33270f;--warn:#f0c070}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-main{max-width:640px;margin:0 auto;padding:16px 16px 48px}
-h1{font-size:1.4rem;margin:8px 0 2px}
-h2{font-size:1.05rem;margin:24px 0 8px}
+main{max-width:640px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top)) 16px calc(90px + env(safe-area-inset-bottom))}
+h1{font-size:1.4rem;margin:4px 0 2px}
+h2{font-size:1.05rem;margin:22px 0 8px}
 .sub{color:var(--muted);font-size:.85rem}
-.tabs{display:flex;gap:8px;margin:16px 0 4px}
-.tabs button{flex:1;padding:10px;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:10px;font:inherit;font-weight:600}
+button{font:inherit;color:inherit}
+.tabs{display:flex;gap:8px;margin:14px 0 6px}
+.tabs button{flex:1;padding:9px;border:1px solid var(--line);background:var(--card);border-radius:10px;font-weight:600}
 .tabs button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
 .tabs button[aria-pressed=true] .sub{color:#fff;opacity:.85}
+nav.bottom{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--card);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom));z-index:5}
+nav.bottom button{flex:1;border:0;background:none;padding:8px 4px;font-size:.8rem;font-weight:600;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px}
+nav.bottom button svg{width:22px;height:22px}
+nav.bottom button[aria-pressed=true]{color:var(--accent)}
 .day{background:var(--card);border:1px solid var(--line);border-radius:12px;margin:8px 0;overflow:hidden}
 .day.today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
 .day summary{list-style:none;display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer}
 .day summary::-webkit-details-marker{display:none}
-.date{width:44px;text-align:center;flex:none}
+.date{width:40px;text-align:center;flex:none}
 .date b{display:block;font-size:1.15rem}
-.date span{font-size:.75rem;color:var(--muted);text-transform:uppercase}
+.date span{font-size:.72rem;color:var(--muted);text-transform:uppercase}
 .plan{flex:1;font-weight:600}
 .note{display:block;font-weight:400;color:var(--muted);font-size:.85rem}
 .pill{font-size:.75rem;font-weight:600;padding:3px 9px;border-radius:99px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
 .pill.done{background:var(--done);border-color:var(--done);color:#fff}
 .pill.partial{background:var(--partial);border-color:var(--partial);color:#fff}
 .pill.skipped{background:var(--skipped);border-color:var(--skipped);color:#fff}
-.pill.rest{color:var(--rest)}
-.detail{padding:0 14px 12px 70px;font-size:.9rem}
-.detail ul{margin:0;padding-left:18px}
-.detail li{margin:3px 0}
-.progress{display:flex;gap:16px;font-size:.9rem;color:var(--muted)}
+.detail{padding:0 14px 14px}
+.exlist{list-style:none;margin:0;padding:0}
+.exlist li{margin:0}
+.exlist .note-row{color:var(--muted);font-size:.85rem;padding:8px 0 2px}
+.exbtn{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:var(--soft);border:0;border-radius:10px;padding:6px 10px 6px 6px;margin:6px 0}
+.exbtn svg{width:48px;height:48px;flex:none;background:var(--card);border-radius:8px}
+.exbtn span{flex:1}
+.exbtn b{display:block;font-size:.92rem}
+.exbtn small{color:var(--muted)}
+.exbtn i{font-style:normal;color:var(--accent);font-size:1.2rem}
+.mark{display:flex;gap:8px;margin-top:10px}
+.mark button{flex:1;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-weight:600}
+.mark button.on.done{background:var(--done);border-color:var(--done);color:#fff}
+.mark button.on.skipped{background:var(--skipped);border-color:var(--skipped);color:#fff}
+.progress{font-size:.9rem;color:var(--muted)}
 .progress b{color:var(--text)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px;text-align:left}
+.card svg{width:100%;height:auto;display:block}
+.card b{display:block;font-size:.9rem;line-height:1.25;margin-top:4px}
+.card small{color:var(--muted);font-size:.75rem}
 table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:.9rem}
 th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
 th{font-size:.75rem;color:var(--muted);text-transform:uppercase}
 tr:last-child td{border-bottom:none}
 .empty{color:var(--muted);font-size:.9rem;padding:12px;background:var(--card);border:1px dashed var(--line);border-radius:12px}
+dialog{border:0;padding:0;width:100%;max-width:640px;max-height:92vh;margin:auto auto 0;border-radius:18px 18px 0 0;background:var(--card);color:var(--text)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+.sheet{padding:16px 18px calc(24px + env(safe-area-inset-bottom))}
+.sheet .top{display:flex;align-items:start;gap:10px}
+.sheet h3{margin:0;font-size:1.2rem;flex:1}
+.close{border:0;background:var(--soft);border-radius:99px;width:32px;height:32px;font-size:1.1rem;flex:none}
+.big{background:var(--soft);border-radius:14px;margin:12px 0;display:flex;justify-content:center;gap:4px}
+.big svg{width:100%;max-width:300px;height:auto}
+.sheet ol{padding-left:20px;margin:8px 0}
+.sheet li{margin:6px 0}
+.sheet h4{margin:14px 0 4px;font-size:.8rem;text-transform:uppercase;color:var(--muted);letter-spacing:.03em}
+.rx{display:inline-block;background:var(--accent);color:#fff;border-radius:8px;padding:2px 8px;font-size:.85rem;font-weight:600;margin-top:4px}
+.knee{background:var(--warn-bg);color:var(--warn);border-radius:10px;padding:10px 12px;margin-top:12px;font-size:.92rem}
+.vid{display:block;text-align:center;margin-top:14px;padding:12px;border-radius:10px;background:var(--accent);color:#fff;text-decoration:none;font-weight:600}
+.fig .body{stroke:var(--text);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.fig .far{opacity:.4}
+.fig .head{fill:var(--text)}
+.fig .scene{stroke:var(--muted);stroke-width:2;fill:none;stroke-linecap:round}
+.fig .gear{fill:var(--accent);stroke:var(--accent)}
+.fig .gearline{stroke:var(--accent);stroke-width:4;stroke-linecap:round}
 </style>
 </head>
 <body>
 <main>
   <h1>Training Tracker</h1>
   <div class="sub" id="updated"></div>
-  <div class="tabs" id="tabs"></div>
-  <div class="progress" id="progress"></div>
-  <div id="days"></div>
-  <h2>Lifts log</h2>
-  <div id="lifts"></div>
+  <section id="view-plan">
+    <div class="tabs" id="tabs"></div>
+    <div class="progress" id="progress"></div>
+    <div id="days"></div>
+  </section>
+  <section id="view-howto" hidden>
+    <h2>Physio</h2><div class="grid" id="g-physio"></div>
+    <h2>Kettlebell + pull-ups</h2><div class="grid" id="g-kb"></div>
+    <h2>Cycling</h2><div class="grid" id="g-bike"></div>
+  </section>
+  <section id="view-lifts" hidden>
+    <h2>Lifts log</h2>
+    <div id="lifts"></div>
+  </section>
 </main>
+<nav class="bottom" id="nav">
+  <button data-v="plan" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Plan</button>
+  <button data-v="howto" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="2"/><path d="M12 7v7M12 14l-4 6M12 14l4 6M6 10l6-2 6 2"/></svg>How-to</button>
+  <button data-v="lifts" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"/></svg>Lifts</button>
+</nav>
+<dialog id="sheet"><div class="sheet" id="sheetBody"></div></dialog>
+<script src="exercises.js"></script>
 <script>
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const todayISO=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
 const label={planned:"Planned",done:"Done",partial:"Partial",skipped:"Skipped",rest:"Rest"};
+const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const store={get(){try{return JSON.parse(localStorage.getItem("marks")||"{}")}catch(e){return {}}},
+  set(v){try{localStorage.setItem("marks",JSON.stringify(v))}catch(e){}}};
+
+/* ---------- stick figures ---------- */
+const NS="http://www.w3.org/2000/svg";
+const el=(t,a,parent)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);parent&&parent.appendChild(e);return e};
+const add=(a,b)=>[a[0]+b[0],a[1]+b[1]];
+const mid=(a,b)=>[(a[0]+b[0])/2,(a[1]+b[1])/2];
+function drawScene(g,scene){for(const s of scene||[]){const [t,...v]=s;
+  if(t==="line")el("line",{x1:v[0],y1:v[1],x2:v[2],y2:v[3],"stroke-width":v[4]||2},g);
+  if(t==="rect")el("rect",{x:v[0],y:v[1],width:v[2],height:v[3],rx:1.5},g);
+  if(t==="circle")el("circle",{cx:v[0],cy:v[1],r:v[2]},g);}}
+function drawPose(g,pose,ex){g.replaceChildren();
+  const pt=k=>k==="mid"?mid(pose.w1,pose.w2):pose[k];
+  const pl=(pts,cls)=>el("polyline",{points:pts.map(p=>p.join(",")).join(" "),class:"body "+(cls||"")},g);
+  let s1=pose.n,s2=pose.n,h1=pose.p,h2=pose.p;
+  if(pose.front){s1=add(pose.n,[-9,2]);s2=add(pose.n,[9,2]);h1=add(pose.p,[-5,0]);h2=add(pose.p,[5,0]);}
+  const farCls=pose.front?"":"far";
+  for(const [type,at,r,dy] of ex.attach||[])if(type==="plate"){const p=pt(at);el("circle",{cx:p[0],cy:p[1]+(dy||0),r:r||10,class:"gear","fill-opacity":.35,"stroke-width":3},g)}
+  pl([h2,pose.k2,pose.f2],farCls);pl([s2,pose.e2,pose.w2],farCls);
+  if(pose.front){pl([s1,s2]);pl([h1,h2]);}
+  pl([pose.n,pose.p]);
+  el("circle",{cx:pose.h[0],cy:pose.h[1],r:7,class:"head"},g);
+  pl(pose.t1?[h1,pose.k1,pose.f1,pose.t1]:[h1,pose.k1,pose.f1]);
+  pl([s1,pose.e1,pose.w1]);
+  for(const [type,at,r,dy] of ex.attach||[]){const p=pt(at);
+    if(type==="kb"){el("circle",{cx:p[0],cy:p[1]+6,r:6,class:"gear"},g);el("path",{d:`M${p[0]-4},${p[1]+2} Q${p[0]},${p[1]-5} ${p[0]+4},${p[1]+2}`,class:"gearline",fill:"none","stroke-width":2.5},g);}
+    if(type==="roller")el("circle",{cx:p[0]+3,cy:p[1]-4,r:4.5,class:"gear"},g);
+    if(type==="platform")el("line",{x1:p[0]+4,y1:p[1]-16,x2:p[0]+10,y2:p[1]+14,class:"gearline","stroke-width":5},g);
+    if(type==="pad")el("rect",{x:p[0]-20,y:p[1]-10,width:24,height:6,rx:2,class:"gear"},g);}}
+function makeSVG(ex,poseIndex){
+  const svg=el("svg",{viewBox:"0 -10 120 124",class:"fig","aria-hidden":"true"});
+  drawScene(el("g",{class:"scene"},svg),ex.scene);
+  const g=el("g",{},svg);
+  drawPose(g,ex.poses[poseIndex??0],ex);
+  return {svg,g};
+}
+const lerpPose=(a,b,t)=>{const o={front:a.front};for(const k in a){if(Array.isArray(a[k]))o[k]=[a[k][0]+(b[k][0]-a[k][0])*t,a[k][1]+(b[k][1]-a[k][1])*t]}return o};
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+const animated=new Set();
+function animate(ex,g){if(reduced||ex.poses.length<2)return;animated.add({ex,g,start:performance.now()});}
+function tick(now){
+  for(const a of animated){
+    if(!a.g.isConnected){animated.delete(a);continue}
+    const seg={slow:1300,fast:450}[a.ex.timing]||800, hold=a.ex.loop?0:280, n=a.ex.poses.length;
+    const total=(seg+hold)*n, t=((now-a.start)%total+total)%total, i=Math.floor(t/(seg+hold)), local=t-i*(seg+hold);
+    const from=a.ex.poses[i], to=a.ex.poses[(i+1)%n];
+    const f=local<hold?0:(a.ex.loop?(local-hold)/seg:ease((local-hold)/seg));
+    drawPose(a.g,lerpPose(from,to,f),a.ex);
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+/* ---------- exercise sheet ---------- */
+const dlg=document.getElementById("sheet");
+function openEx(id,rx){const ex=EXERCISES[id];if(!ex)return;
+  const b=document.getElementById("sheetBody");
+  b.innerHTML=`<div class="top"><div style="flex:1"><h3>${esc(ex.name)}</h3><div class="sub">${esc(ex.tag)}</div>${rx?`<span class="rx">${esc(rx)}</span>`:""}</div><button class="close" aria-label="Close">✕</button></div>
+    <div class="big" id="bigfig"></div>
+    <h4>How to do it</h4><ol>${ex.steps.map(s=>`<li>${esc(s)}</li>`).join("")}</ol>
+    ${ex.cues?`<h4>Tips</h4><ol>${ex.cues.map(s=>`<li>${esc(s)}</li>`).join("")}</ol>`:""}
+    ${ex.knee?`<div class="knee"><b>Knee:</b> ${esc(ex.knee)}</div>`:""}
+    <a class="vid" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=${encodeURIComponent(ex.video)}">▶ Watch a video demo</a>`;
+  const big=b.querySelector("#bigfig");
+  if(reduced&&ex.poses.length>1){ex.poses.slice(0,3).forEach((_,i)=>big.appendChild(makeSVG(ex,i).svg))}
+  else{const f=makeSVG(ex);big.appendChild(f.svg);animate(ex,f.g)}
+  b.querySelector(".close").onclick=()=>dlg.close();
+  dlg.showModal();b.scrollTop=0;
+}
+dlg.addEventListener("click",e=>{if(e.target===dlg)dlg.close()});
+
+/* ---------- how-to grid ---------- */
+const groups={"g-physio":["kneeExt","legPress","trapBar","stepDown","drinkingBird","plateRotation","sidePlank","calfRaise"],
+  "g-kb":["pulloverExt","uppercuts","curlHalo","ohMarch","pushups","ballisticRow","pullups"],"g-bike":["zwift"]};
+for(const [gid,ids] of Object.entries(groups)){const grid=document.getElementById(gid);
+  for(const id of ids){const ex=EXERCISES[id];const c=document.createElement("button");c.className="card";
+    const f=makeSVG(ex);c.appendChild(f.svg);animate(ex,f.g);
+    c.insertAdjacentHTML("beforeend",`<b>${esc(ex.name)}</b><small>${esc(ex.tag)}</small>`);
+    c.onclick=()=>openEx(id);grid.appendChild(c);}}
+
+/* ---------- navigation ---------- */
+const nav=document.getElementById("nav");
+function show(v){for(const b of nav.querySelectorAll("button"))b.setAttribute("aria-pressed",b.dataset.v===v);
+  for(const s of ["plan","howto","lifts"])document.getElementById("view-"+s).hidden=s!==v;scrollTo(0,0);
+  try{localStorage.setItem("view",v)}catch(e){}}
+nav.onclick=e=>{const b=e.target.closest("button");if(b)show(b.dataset.v)};
+try{const v=localStorage.getItem("view");if(v)show(v)}catch(e){}
+
+/* ---------- plan ---------- */
 fetch("data.json?"+Date.now()).then(r=>r.json()).then(data=>{
   document.getElementById("updated").textContent="Updated "+data.updated;
   const today=todayISO();
   let current=Math.max(0,data.weeks.findIndex(w=>w.days.some(d=>d.date===today)));
-  if(today>data.weeks.at(-1).days.at(-1).date) current=data.weeks.length-1;
-  const tabs=document.getElementById("tabs");
+  if(today>data.weeks.at(-1).days.at(-1).date)current=data.weeks.length-1;
+  const open=new Set([today]);
+  const tabs=document.getElementById("tabs"), days=document.getElementById("days");
+  function status(d){const m=store.get()[d.date];if(m)return m;return d.plan==="Rest"&&d.status==="planned"?"rest":d.status}
   function render(){
     tabs.innerHTML=data.weeks.map((w,i)=>`<button aria-pressed="${i===current}" data-i="${i}">${esc(w.name)}<br><span class="sub">${esc(w.range)}</span></button>`).join("");
     const w=data.weeks[current];
     const train=w.days.filter(d=>d.plan!=="Rest");
-    const done=train.filter(d=>d.status==="done").length;
-    document.getElementById("progress").innerHTML=`<span><b>${done}/${train.length}</b> sessions done</span>`;
-    document.getElementById("days").innerHTML=w.days.map(d=>{
-      const dt=new Date(d.date+"T00:00");
-      const parts=d.plan.split(" + ");
-      const items=parts.flatMap(p=>data.sessions[p]||[]);
-      const st=d.plan==="Rest"&&d.status==="planned"?"rest":d.status;
-      return `<details class="day${d.date===today?" today":""}"${d.date===today?" open":""}>
-        <summary><div class="date"><span>${dt.toLocaleDateString("en-AU",{weekday:"short"})}</span><b>${dt.getDate()}</b></div>
+    document.getElementById("progress").innerHTML=`<b>${train.filter(d=>status(d)==="done").length}/${train.length}</b> sessions done`;
+    days.innerHTML="";
+    for(const d of w.days){
+      const dt=new Date(d.date+"T00:00"), st=status(d);
+      const items=d.plan.split(" + ").flatMap(p=>data.sessions[p]||[]);
+      const det=document.createElement("details");det.className="day"+(d.date===today?" today":"");det.open=open.has(d.date);
+      det.ontoggle=()=>det.open?open.add(d.date):open.delete(d.date);
+      det.innerHTML=`<summary><div class="date"><span>${dt.toLocaleDateString("en-AU",{weekday:"short"})}</span><b>${dt.getDate()}</b></div>
         <div class="plan">${esc(d.plan)}${d.notes?`<span class="note">${esc(d.notes)}</span>`:""}</div>
-        <span class="pill ${st}">${label[st]||esc(st)}</span></summary>
-        ${items.length?`<div class="detail"><ul>${items.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
-      </details>`}).join("");
+        <span class="pill ${st}">${label[st]||esc(st)}</span></summary><div class="detail"><ul class="exlist"></ul></div>`;
+      const ul=det.querySelector("ul");
+      for(const it of items){const li=document.createElement("li");
+        if(it.note){li.className="note-row";li.textContent=it.note}
+        else{const ex=EXERCISES[it.ex];const b=document.createElement("button");b.className="exbtn";
+          const f=makeSVG(ex,ex.poses.length>1?1:0);b.appendChild(f.svg);
+          b.insertAdjacentHTML("beforeend",`<span><b>${esc(ex.name)}</b><small>${esc(it.rx)}</small></span><i>›</i>`);
+          b.onclick=()=>openEx(it.ex,it.rx);li.appendChild(b)}
+        ul.appendChild(li)}
+      if(d.plan!=="Rest"){
+        const m=document.createElement("div");m.className="mark";const cur=store.get()[d.date];
+        m.innerHTML=`<button class="done ${cur==="done"?"on":""}" data-s="done">✓ Done</button><button class="skipped ${cur==="skipped"?"on":""}" data-s="skipped">✕ Skipped</button>`;
+        m.onclick=e=>{const b=e.target.closest("button");if(!b)return;const all=store.get();
+          all[d.date]=all[d.date]===b.dataset.s?undefined:b.dataset.s;store.set(all);render()};
+        det.querySelector(".detail").appendChild(m)}
+      days.appendChild(det)}
   }
   tabs.onclick=e=>{const b=e.target.closest("button");if(b){current=+b.dataset.i;render()}};
   render();

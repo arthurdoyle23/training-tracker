@@ -1,36 +1,196 @@
 {
   "updated": "2026-11-01",
   "sessions": {
-    "Gym A": ["SL Knee Ext (2 up, 1 down) 3x5 ES @75%", "Trap Bar Deadlift 4x6 @75%", "Balance: Drinking Bird 2x2 ES, SL plate rotation 2x4 ES", "Side plank 3x7 ES", "Seated calf raises 3x8"],
-    "Gym B": ["SL Leg Press 3x7 ES @75%", "SL Step Down 3x6 ES @75%", "Balance: Drinking Bird 2x2 ES, SL plate rotation 2x4 ES", "Side plank 3x7 ES", "Seated calf raises 3x8"],
-    "KB": ["20 min AMRAP: 12 pullovers to tricep ext, 20 uppercuts, 10 horn curls to halos, 20 SA overhead marches, 10 push-ups, 15 ballistic rows", "Pull-ups: 3 sets, 1-2 reps short of failure"],
-    "Zwift": ["Easy ride"]
+    "Gym A": [
+      {
+        "ex": "kneeExt",
+        "rx": "3x5 each side @75%"
+      },
+      {
+        "ex": "trapBar",
+        "rx": "4x6 @75%"
+      },
+      {
+        "ex": "drinkingBird",
+        "rx": "2x2 each side"
+      },
+      {
+        "ex": "plateRotation",
+        "rx": "2x4 each side"
+      },
+      {
+        "ex": "sidePlank",
+        "rx": "3x7 each side"
+      },
+      {
+        "ex": "calfRaise",
+        "rx": "3x8"
+      }
+    ],
+    "Gym B": [
+      {
+        "ex": "legPress",
+        "rx": "3x7 each side @75%"
+      },
+      {
+        "ex": "stepDown",
+        "rx": "3x6 each side @75%"
+      },
+      {
+        "ex": "drinkingBird",
+        "rx": "2x2 each side"
+      },
+      {
+        "ex": "plateRotation",
+        "rx": "2x4 each side"
+      },
+      {
+        "ex": "sidePlank",
+        "rx": "3x7 each side"
+      },
+      {
+        "ex": "calfRaise",
+        "rx": "3x8"
+      }
+    ],
+    "KB": [
+      {
+        "note": "20 min AMRAP: as many rounds as you can of:"
+      },
+      {
+        "ex": "pulloverExt",
+        "rx": "12"
+      },
+      {
+        "ex": "uppercuts",
+        "rx": "20 (10 each side)"
+      },
+      {
+        "ex": "curlHalo",
+        "rx": "10"
+      },
+      {
+        "ex": "ohMarch",
+        "rx": "20 (10 each side)"
+      },
+      {
+        "ex": "pushups",
+        "rx": "10"
+      },
+      {
+        "ex": "ballisticRow",
+        "rx": "15"
+      },
+      {
+        "note": "Then:"
+      },
+      {
+        "ex": "pullups",
+        "rx": "3 sets, 1-2 reps short of failure"
+      }
+    ],
+    "Zwift": [
+      {
+        "ex": "zwift",
+        "rx": "Easy ride"
+      }
+    ]
   },
   "weeks": [
     {
       "name": "Week 1",
       "range": "2-8 Nov",
       "days": [
-        {"date": "2026-11-02", "plan": "Gym A", "status": "planned", "notes": ""},
-        {"date": "2026-11-03", "plan": "Zwift", "status": "planned", "notes": ""},
-        {"date": "2026-11-04", "plan": "KB", "status": "planned", "notes": ""},
-        {"date": "2026-11-05", "plan": "Gym B", "status": "planned", "notes": ""},
-        {"date": "2026-11-06", "plan": "KB", "status": "planned", "notes": ""},
-        {"date": "2026-11-07", "plan": "Zwift", "status": "planned", "notes": ""},
-        {"date": "2026-11-08", "plan": "Rest", "status": "planned", "notes": ""}
+        {
+          "date": "2026-11-02",
+          "plan": "Gym A",
+          "status": "planned",
+          "notes": ""
+        },
+        {
+          "date": "2026-11-03",
+          "plan": "Zwift",
+          "status": "planned",
+          "notes": ""
+        },
+        {
+          "date": "2026-11-04",
+          "plan": "KB",
+          "status": "planned",
+          "notes": ""
+        },
+        {
+          "date": "2026-11-05",
+          "plan": "Gym B",
+          "status": "planned",
+          "notes": ""
+        },
+        {
+          "date": "2026-11-06",
+          "plan": "KB",
+          "status": "planned",
+          "notes": ""
+        },
+        {
+          "date": "2026-11-07",
+          "plan": "Zwift",
+          "status": "planned",
+          "notes": ""
+        },
+        {
+          "date": "2026-11-08",
+          "plan": "Rest",
+          "status": "planned",
+          "notes": ""
+        }
       ]
     },
     {
       "name": "Week 2",
       "range": "9-15 Nov",
       "days": [
-        {"date": "2026-11-09", "plan": "Gym A", "status": "planned", "notes": ""},
-        {"date": "2026-11-10", "plan": "Zwift", "status": "planned", "notes": ""},
-        {"date": "2026-11-11", "plan": "KB", "status": "planned", "notes": ""},
-        {"date": "2026-11-12", "plan": "Gym B", "status": "planned", "notes": ""},
-        {"date": "2026-11-13", "plan": "Zwift", "status": "planned", "notes": ""},
-        {"date": "2026-11-14", "plan": "Zwift + KB", "status": "planned", "notes": ""},
-        {"date": "2026-11-15", "plan": "Rest", "status": "planned", "notes": ""}
+        {
+          "date": "2026-11-09",
+          "plan": "Gym A",
+          "status": "planned",
+          "notes": ""
+        },
+        {
+          "date": "2026-11-10",
+          "plan": "Zwift",
+          "status": "planned",
+          "notes": ""
+        },
+        {
+          "date": "2026-11-11",
+          "plan": "KB",
+          "status": "planned",
+          "notes": ""
+        },
+        {
+          "date": "2026-11-12",
+          "plan": "Gym B",
+          "status": "planned",
+          "notes": ""
+        },
+        {
+          "date": "2026-11-13",
+          "plan": "Zwift",
+          "status": "planned",
+          "notes": ""
+        },
+        {
+          "date": "2026-11-14",
+          "plan": "Zwift + KB",
+          "status": "planned",
+          "notes": ""
+        },
+        {
+          "date": "2026-11-15",
+          "plan": "Rest",
+          "status": "planned",
+          "notes": ""
+        }
       ]
     }
   ],
